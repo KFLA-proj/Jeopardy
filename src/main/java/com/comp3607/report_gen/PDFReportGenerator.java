@@ -31,43 +31,69 @@ public class PDFReportGenerator implements ReportGenerator {
             document.add(new Paragraph("JEOPARDY PROGRAMMING GAME REPORT"));
             document.add(new Paragraph("================================\n"));
 
+            // Case ID
             String caseIdStr = "N/A";
-            if (!events.isEmpty() && events.get(0).caseId != null) {
-                caseIdStr = events.get(0).caseId;
+            if (!events.isEmpty()) {
+                GameEvent firstEvent = events.get(0);
+                if (firstEvent.getCaseId() != null) {
+                    caseIdStr = firstEvent.getCaseId();
+                }
             }
             document.add(new Paragraph("Case ID: " + caseIdStr + "\n"));
 
             // Player names
             List<String> playerNames = new ArrayList<>();
             for (GameEvent e : events) {
-                if (e.playerName != null && !playerNames.contains(e.playerName)) {
-                    playerNames.add(e.playerName);
+                String playerName = e.getPlayerName();
+                if (playerName != null && !playerNames.contains(playerName)) {
+                    playerNames.add(playerName);
                 }
             }
             document.add(new Paragraph("Players: " + String.join(", ", playerNames) + "\n"));
 
+            // Gameplay Summary
             document.add(new Paragraph("Gameplay Summary:\n-----------------"));
             int turn = 1;
             for (GameEvent e : events) {
-                if ("Answer Question".equals(e.activity) && e.question != null) {
-                    document.add(new Paragraph("Turn " + turn + ": " + e.playerName + " selected " 
-                            + e.question.getCategory() + " for " 
-                            + e.question.getValue() + " pts"));
-                    document.add(new Paragraph("Question: " + e.question.getText()));
-                    document.add(new Paragraph("Answer: " + e.answerGiven + " — " + e.result 
-                            + " (+" + e.question.getValue() + " pts)"));
-                    document.add(new Paragraph("Score after turn: " + e.playerName + " = " + e.scoreAfter + "\n"));
+                if ("Answer Question".equals(e.getActivity()) && e.getQuestion() != null) {
+
+                    String category = "";
+                    if (e.getQuestion().getCategory() != null) {
+                        category = e.getQuestion().getCategory();
+                    }
+
+                    int value = e.getQuestion().getValue();
+
+                    String questionText = "";
+                    if (e.getQuestion().getText() != null) {
+                        questionText = e.getQuestion().getText();
+                    }
+
+                    String answerGiven = "";
+                    if (e.getAnswerGiven() != null) {
+                        answerGiven = e.getAnswerGiven();
+                    }
+
+                    String result = "";
+                    if (e.getResult() != null) {
+                        result = e.getResult();
+                    }
+
+                    document.add(new Paragraph("Turn " + turn + ": " + e.getPlayerName() + " selected " + category + " for " + value + " pts"));
+                    document.add(new Paragraph("Question: " + questionText));
+                    document.add(new Paragraph("Answer: " + answerGiven + " — " + result + " (+" + value + " pts)"));
+                    document.add(new Paragraph("Score after turn: " + e.getPlayerName() + " = " + e.getScoreAfter() + "\n"));
                     turn++;
                 }
             }
 
-            // Final scores
+            // Final Scores
             document.add(new Paragraph("Final Scores:"));
             for (String playerName : playerNames) {
                 int finalScore = 0;
                 for (GameEvent e : events) {
-                    if (playerName.equals(e.playerName)) {
-                        finalScore = e.scoreAfter;
+                    if (playerName.equals(e.getPlayerName())) {
+                        finalScore = e.getScoreAfter();
                     }
                 }
                 document.add(new Paragraph(playerName + ": " + finalScore));
