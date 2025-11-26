@@ -48,27 +48,38 @@ public class GameLogger implements GameObserver {
     public void logTurn(Player player, String activity, Question question, String answerGiven, String result) {
         int score = player.getScore();
 
-        // Create GameEvent using new constructor
+        // Replace nulls with empty strings
+        if (answerGiven == null) {
+            answerGiven = "";
+        }
+        if (result == null) {
+            result = "";
+        }
+
         GameEvent event = new GameEvent(
             this.caseId,
             player.getName(),
             activity,
             LocalDateTime.now(),
-            question,          // pass Question object directly
-            answerGiven != null ? answerGiven : "",
-            result != null ? result : "",
+            question,          
+            answerGiven,
+            result,
             score
         );
 
         events.add(event);
 
-        // Log string for CSV/text
+        String category = event.getCategory();
+        if (category == null) {
+            category = "";
+        }
+
         log.add(String.join(",",
             event.getCaseId(),
             event.getPlayerName(),
             event.getActivity(),
             event.getTimestamp().toString(),
-            event.getCategory() != null ? event.getCategory() : "",
+            category,
             String.valueOf(event.getQuestionValue()),
             event.getAnswerGiven(),
             event.getResult(),
