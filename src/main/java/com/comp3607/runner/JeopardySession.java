@@ -19,7 +19,7 @@ public class JeopardySession {
         //technically it can be empty so i wanna put the vault here and move the loadvault into each if statement so it can only load if there's a file with correct extension
         Vault vault = game.getVault();
 
-        // 2. Choose a parser (Strategy pattern)
+        // choosing parser based on filename entered, maybe can change this to read dir and give choice of which one like how we choose options for answer?
         System.out.print("Enter Vault FileName: "); //gotta fix this, instead of splitting backwards, just split at . instead - OUTSTANDING
         String filename = scanner.nextLine();
         int dotIndex = filename.lastIndexOf('.');
@@ -44,7 +44,7 @@ public class JeopardySession {
             System.exit(0); //i guess?
         }
         
-        // 4. Create players
+        // creating players
         System.out.print("Enter number of players: ");
         int numPlayers = (scanner.nextInt());
         scanner.nextLine(); // newline char messing with my input
@@ -97,7 +97,7 @@ public class JeopardySession {
             }
         }
 
-        // 7. Print final scores
+        // temp sys output of scores to show player tracking works
         System.out.println("\nFinal Scores:");
         for (Player p : game.getPlayers()) {
             System.out.println(p.getName() + ": " + p.getScore());
