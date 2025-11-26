@@ -1,7 +1,6 @@
 package com.comp3607.logger;
 
 import java.time.LocalDateTime;
-
 import com.comp3607.questions.Question;
 
 public class GameEvent {
@@ -16,16 +15,22 @@ public class GameEvent {
     public final int scoreAfter;
     public Question question;
 
-
     public GameEvent(String caseId, String playerName, String activity, LocalDateTime timestamp,
-                    Question question, String answerGiven, String result, int scoreAfter) {
+                     Question question, String answerGiven, String result, int scoreAfter) {
         this.caseId = caseId;
         this.playerName = playerName;
         this.activity = activity;
         this.timestamp = timestamp;
-        this.question = question;                         // store the Question object
-        this.category = (question != null) ? question.getCategory() : null;
-        this.questionValue = (question != null) ? question.getValue() : 0;
+        this.question = question;
+
+        if (question != null) {
+            this.category = question.getCategory();
+            this.questionValue = question.getValue();
+        } else {
+            this.category = null;
+            this.questionValue = 0;
+        }
+
         this.answerGiven = answerGiven;
         this.result = result;
         this.scoreAfter = scoreAfter;
