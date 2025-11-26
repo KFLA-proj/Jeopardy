@@ -4,104 +4,121 @@ import com.comp3607.core_game.*;
 import com.comp3607.questions.*;
 import com.comp3607.io.*;
 import com.comp3607.logger.*;
-//import com.comp3607.report_gen.*;
 import com.comp3607.actions.*;
+
 import java.util.Scanner;
 
 public class JeopardySession {
     public static void main(String[] args) {
-        // setup game, make scanner and stuff
         Game game = new Game();
         GameLogger logger = new GameLogger();
-        Scanner scanner = new Scanner(System.in);
         game.attach(logger);
-
-        //technically it can be empty so i wanna put the vault here and move the loadvault into each if statement so it can only load if there's a file with correct extension
+        Scanner scanner = new Scanner(System.in);
         Vault vault = game.getVault();
 
-        // choosing parser based on filename entered, maybe can change this to read dir and give choice of which one like how we choose options for answer?
-        System.out.print("Enter Vault FileName: "); //gotta fix this, instead of splitting backwards, just split at . instead - OUTSTANDING
-        String filename = scanner.nextLine();
-        int dotIndex = filename.lastIndexOf('.');
-        String fileExt = ""; //to use outside the if statement incase the . is in a wonky spot
-        if (dotIndex >=0 && dotIndex<filename.length()-1){
-            fileExt = filename.substring(dotIndex+1).toLowerCase();
-        }
-        if (fileExt.equals("csv")){
-            Reader reader = new CSVReader(filename);
-            System.out.println("opened csv");
-            vault.loadQuestions(reader);
-        } else if (fileExt.equals("xml")){ // broken
-            Reader reader = new XMLReader(filename);
-            System.out.println("opened xml");
-            vault.loadQuestions(reader);
-        } else if (fileExt.equals("json")){
-            Reader reader = new JSONReader(filename);
-            System.out.println("opened json");
-            vault.loadQuestions(reader);
-        } else { //redundant? yes. works? also yes.
-            System.out.println("Unexpected File Type.");
-            System.exit(0); //i guess?
-        }
-        
-        // creating players
-        System.out.print("Enter number of players: ");
-        int numPlayers = (scanner.nextInt());
-        scanner.nextLine(); // newline char messing with my input
-        for (int x=0; x<numPlayers; x++){
-            System.out.print("Enter player " + (x+1) + " name: ");
-            String name = scanner.nextLine();
-            Player p = new Player(name);
-            game.getPlayers().add(p);
-        }
+        // File Selection
+        Reader reader = null;
+        while (reader == null) {
+            System.out.println("Select the game file to load:");
+            System.out.println("1. CSV");
+            System.out.println("2. JSON");
+            System.out.println("3. XML");
+            System.out.print("Enter choice (1-3): ");
+            String choice = scanner.nextLine().trim();
 
-        game.getVault().displayAll();
-        int x=0;
-        while (true){
-            if (!game.hasActiveQuestion()){
-                System.out.println("[" + game.getPlayers().get(x).getName() + "] Choose a question by category and value: (Eg: File Handling 200)"); // just wanna add some player tracking cause its kinda easy to lose track rn
-                String string = scanner.nextLine();
-                if (string.equals("exit")){break;}
-                String cat = string.substring(0, string.length()-3).trim(); //THE PROBLEM WAS WHITESPACE AFTER TRUNCATE cause i split at the start of value so there was perma whitespace
-                int val = Integer.valueOf(string.substring(string.length()-3, string.length()));
-                Question q = vault.getQuestion(cat, val);
-                if (q==null){
-                    System.out.println("No Question found for " + cat + " at " + val); //somehow i managed to write everything blind with no validation - my genius is truly frightening or atleast it would be if it worked
-                }
-                ActionTaken selectedQuestion = new SelectQuestionAction(game.getPlayers().get(x), q);
-                selectedQuestion.execute(game);
-                //vault.getQuestion(cat, val).displayOptions(); //put it in execute instead
-                System.out.println("Choose your answer: (A,B,C,D)");
-                String answer = scanner.nextLine();
-                if (answer.equals("exit")){break;}
-                char ans = Character.toUpperCase(answer.charAt(0));
-                ActionTaken answeredQuestion = new AnswerQuestionAction(game.getPlayers().get(x), q, ans);
-                answeredQuestion.execute(game);
-                if (game.hasActiveQuestion()){
-                    if (x==(game.getPlayers().size())-1){x=0;}
-                    else {x++;}
-                }
-            }else if (game.hasActiveQuestion()){
-                Question q = game.getActiveQuestion();
-                q.displayOptions();
-                System.out.println("Choose your answer: (A,B,C,D)");
-                String answer = scanner.nextLine();
-                if (answer.equals("exit")){break;}
-                char ans = Character.toUpperCase(answer.charAt(0));
-                ActionTaken answeredQuestion = new AnswerQuestionAction(game.getPlayers().get(x), q, ans);
-                answeredQuestion.execute(game);
-                if (game.hasActiveQuestion()){
-                    if (x==(game.getPlayers().size())-1){x=0;}
-                    else {x++;}
-                }
+            if (choice.equals("1")) {
+                reader = new CSVReader("sample_game_CSV.csv");
+                System.out.println("Loaded CSV file.");
+            } else if (choice.equals("2")) {
+                reader = new JSONReader("sample_game_JSON.json");
+                System.out.println("Loaded JSON file.");
+            } else if (choice.equals("3")) {
+                reader = new XMLReader("sample_game_XML.xml");
+                System.out.println("Loaded XML file.");
+            } else {
+                System.out.println("Invalid choice. Please enter 1, 2, or 3.");
             }
         }
 
-        // temp sys output of scores to show player tracking works
+        vault.loadQuestions(reader);
+
+        // Number of Plyaers
+        int numPlayers = 0;
+        while (numPlayers < 1 || numPlayers > 4) {
+            System.out.print("Enter number of players (1-4): ");
+            if (scanner.hasNextInt()) {
+                numPlayers = scanner.nextInt();
+                scanner.nextLine(); // consume newline
+                if (numPlayers < 1 || numPlayers > 4) {
+                    System.out.println("Invalid number of players. Must be between 1 and 4.");
+                }
+            } else {
+                System.out.println("Invalid input. Please enter a number between 1 and 4.");
+                scanner.nextLine();
+            }
+        }
+
+        for (int i = 0; i < numPlayers; i++) {
+            System.out.print("Enter player " + (i + 1) + " name: ");
+            String name = scanner.nextLine().trim();
+            game.getPlayers().add(new Player(name));
+        }
+
+        vault.displayAll();
+
+        int currentPlayerIndex = 0;
+
+        // Game
+        while (vault.getAll().size() > 0) { 
+            Player currentPlayer = game.getPlayers().get(currentPlayerIndex);
+
+            Question selectedQuestion = null;
+            while (selectedQuestion == null) {
+                System.out.println("[" + currentPlayer.getName() + "] Choose a question by category and value (e.g., File Handling 200):");
+                String input = scanner.nextLine().trim();
+                try {
+                    int spaceIndex = input.lastIndexOf(' ');
+                    String category = input.substring(0, spaceIndex).trim();
+                    int value = Integer.parseInt(input.substring(spaceIndex + 1));
+
+                    selectedQuestion = vault.getQuestion(category, value);
+                    if (selectedQuestion == null) {
+                        System.out.println("No question found for " + category + " at " + value);
+                    }
+
+                } catch (Exception e) {
+                    System.out.println("Invalid input format. Use 'Category Value' e.g., File Handling 200");
+                }
+            }
+
+            System.out.println("\nQuestion: " + selectedQuestion.getText());
+            selectedQuestion.displayOptions();
+
+            char answer = ' ';
+            while (true) {
+                System.out.println("[" + currentPlayer.getName() + "] Choose your answer: (A, B, C, D)");
+                String ansInput = scanner.nextLine().trim();
+                if (ansInput.length() == 1) {
+                    answer = Character.toUpperCase(ansInput.charAt(0));
+                    if (answer >= 'A' && answer <= 'D') break;
+                }
+                System.out.println("Invalid input. Please enter A, B, C, or D.");
+            }
+
+            ActionTaken answerAction = new AnswerQuestionAction(currentPlayer, selectedQuestion, answer);
+            answerAction.execute(game);
+
+            vault.removeQuestion(selectedQuestion);
+            vault.displayAll();
+
+            currentPlayerIndex = (currentPlayerIndex + 1) % game.getPlayers().size();
+        }
+
         System.out.println("\nFinal Scores:");
         for (Player p : game.getPlayers()) {
             System.out.println(p.getName() + ": " + p.getScore());
         }
+
         scanner.close();
     }
 }
