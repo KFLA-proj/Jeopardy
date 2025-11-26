@@ -64,15 +64,15 @@ public class GameLogger implements GameObserver {
 
         // Log string for CSV/text
         log.add(String.join(",",
-            event.caseId,
-            event.playerName,
-            event.activity,
-            event.timestamp.toString(),
-            event.category != null ? event.category : "",
-            String.valueOf(event.questionValue),
-            event.answerGiven,
-            event.result,
-            String.valueOf(event.scoreAfter)
+            event.getCaseId(),
+            event.getPlayerName(),
+            event.getActivity(),
+            event.getTimestamp().toString(),
+            event.getCategory() != null ? event.getCategory() : "",
+            String.valueOf(event.getQuestionValue()),
+            event.getAnswerGiven(),
+            event.getResult(),
+            String.valueOf(event.getScoreAfter())
         ));
     }
 

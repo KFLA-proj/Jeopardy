@@ -23,45 +23,72 @@ public class TXTReportGenerator implements ReportGenerator {
             writer.write("JEOPARDY PROGRAMMING GAME REPORT\n");
             writer.write("================================\n\n");
 
+            // Case ID
             String caseIdStr = "N/A";
-            if (!events.isEmpty() && events.get(0).caseId != null) {
-                caseIdStr = events.get(0).caseId;
+            if (!events.isEmpty()) {
+                GameEvent firstEvent = events.get(0);
+                if (firstEvent.getCaseId() != null) {
+                    caseIdStr = firstEvent.getCaseId();
+                }
             }
             writer.write("Case ID: " + caseIdStr + "\n\n");
 
             // Collect player names
             List<String> playerNames = new ArrayList<>();
             for (GameEvent e : events) {
-                if (e.playerName != null && !playerNames.contains(e.playerName)) {
-                    playerNames.add(e.playerName);
+                String playerName = e.getPlayerName();
+                if (playerName != null && !playerNames.contains(playerName)) {
+                    playerNames.add(playerName);
                 }
             }
             writer.write("Players: " + String.join(", ", playerNames) + "\n\n");
 
+            // Gameplay Summary
             writer.write("Gameplay Summary:\n");
             writer.write("-----------------\n");
 
             int turn = 1;
             for (GameEvent e : events) {
-                if ("Answer Question".equals(e.activity) && e.question != null) {
-                    writer.write("Turn " + turn + ": " + e.playerName + " selected " 
-                                 + e.question.getCategory() + " for " 
-                                 + e.question.getValue() + " pts\n");
-                    writer.write("Question: " + e.question.getText() + "\n");
-                    writer.write("Answer: " + e.answerGiven + " — " + e.result 
-                                 + " (+" + e.question.getValue() + " pts)\n");
-                    writer.write("Score after turn: " + e.playerName + " = " + e.scoreAfter + "\n\n");
+                if ("Answer Question".equals(e.getActivity()) && e.getQuestion() != null) {
+
+                    String category = "";
+                    if (e.getQuestion().getCategory() != null) {
+                        category = e.getQuestion().getCategory();
+                    }
+
+                    int value = e.getQuestion().getValue();
+
+                    String questionText = "";
+                    if (e.getQuestion().getText() != null) {
+                        questionText = e.getQuestion().getText();
+                    }
+
+                    String answerGiven = "";
+                    if (e.getAnswerGiven() != null) {
+                        answerGiven = e.getAnswerGiven();
+                    }
+
+                    String result = "";
+                    if (e.getResult() != null) {
+                        result = e.getResult();
+                    }
+
+                    writer.write("Turn " + turn + ": " + e.getPlayerName() + " selected " 
+                                 + category + " for " + value + " pts\n");
+                    writer.write("Question: " + questionText + "\n");
+                    writer.write("Answer: " + answerGiven + " — " + result + " (+" + value + " pts)\n");
+                    writer.write("Score after turn: " + e.getPlayerName() + " = " + e.getScoreAfter() + "\n\n");
                     turn++;
                 }
             }
 
-            // Final scores
+            // Final Scores
             writer.write("Final Scores:\n");
             for (String playerName : playerNames) {
                 int finalScore = 0;
                 for (GameEvent e : events) {
-                    if (playerName.equals(e.playerName)) {
-                        finalScore = e.scoreAfter;
+                    if (playerName.equals(e.getPlayerName())) {
+                        finalScore = e.getScoreAfter();
                     }
                 }
                 writer.write(playerName + ": " + finalScore + "\n");

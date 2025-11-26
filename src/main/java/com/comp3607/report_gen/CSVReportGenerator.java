@@ -25,34 +25,42 @@ public class CSVReportGenerator implements ReportGenerator {
 
             for (GameEvent e : events) {
                 String caseIdStr = "";
-                if (e.caseId != null) {
-                    caseIdStr = e.caseId;
+                if (e.getCaseId() != null) {
+                    caseIdStr = e.getCaseId();
                 }
 
                 String playerNameStr = "";
-                if (e.playerName != null) {
-                    playerNameStr = e.playerName;
+                if (e.getPlayerName() != null) {
+                    playerNameStr = e.getPlayerName();
                 }
 
                 String activityStr = "";
-                if (e.activity != null) {
-                    activityStr = e.activity;
+                if (e.getActivity() != null) {
+                    activityStr = e.getActivity();
                 }
 
                 String timestampStr = "";
-                if (e.timestamp != null) {
-                    timestampStr = e.timestamp.format(FORMATTER);
+                if (e.getTimestamp() != null) {
+                    timestampStr = e.getTimestamp().format(FORMATTER);
                 }
 
                 String categoryStr = "";
-                if (e.category != null) {
-                    categoryStr = e.category;
+                if (e.getCategory() != null) {
+                    categoryStr = e.getCategory();
                 }
 
-                String answerGivenStr = escapeCSV(e.answerGiven);
-                String resultStr = escapeCSV(e.result);
-                String questionValueStr = String.valueOf(e.questionValue);
-                String scoreAfterStr = String.valueOf(e.scoreAfter);
+                String answerGivenStr = "";
+                if (e.getAnswerGiven() != null) {
+                    answerGivenStr = escapeCSV(e.getAnswerGiven());
+                }
+
+                String resultStr = "";
+                if (e.getResult() != null) {
+                    resultStr = escapeCSV(e.getResult());
+                }
+
+                String questionValueStr = String.valueOf(e.getQuestionValue());
+                String scoreAfterStr = String.valueOf(e.getScoreAfter());
 
                 writer.write(String.join(",",
                         caseIdStr,
@@ -68,7 +76,8 @@ public class CSVReportGenerator implements ReportGenerator {
                 writer.write("\n");
             }
 
-        } catch (IOException ex) {
+        } 
+        catch (IOException ex) {
             ex.printStackTrace();
         }
     }
