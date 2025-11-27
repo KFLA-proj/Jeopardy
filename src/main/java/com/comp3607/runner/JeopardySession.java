@@ -5,18 +5,21 @@ import com.comp3607.questions.*;
 import com.comp3607.io.*;
 import com.comp3607.logger.*;
 import com.comp3607.actions.*;
+import com.comp3607.report_gen.*;
 
 import java.util.Scanner;
+import java.io.File;
 
 public class JeopardySession {
     public static void main(String[] args) {
         Game game = new Game();
-        GameLogger logger = new GameLogger();
+        GameLogger logger = new GameLogger("GAME001"); // For report generation
         game.attach(logger);
+
         Scanner scanner = new Scanner(System.in);
         Vault vault = game.getVault();
 
-        // File Selection
+        // --- File Selection ---
         Reader reader = null;
         while (reader == null) {
             System.out.println("Select the game file to load:");
@@ -26,23 +29,19 @@ public class JeopardySession {
             System.out.print("Enter choice (1-3): ");
             String choice = scanner.nextLine().trim();
 
-            if (choice.equals("1")) {
-                reader = new CSVReader("sample_game_CSV.csv");
-                System.out.println("Loaded CSV file.");
-            } else if (choice.equals("2")) {
-                reader = new JSONReader("sample_game_JSON.json");
-                System.out.println("Loaded JSON file.");
-            } else if (choice.equals("3")) {
-                reader = new XMLReader("sample_game_XML.xml");
-                System.out.println("Loaded XML file.");
-            } else {
+            if (choice.equals("1")) reader = new CSVReader("sample_game_CSV.csv");
+            else if (choice.equals("2")) reader = new JSONReader("sample_game_JSON.json");
+            else if (choice.equals("3")) reader = new XMLReader("sample_game_XML.xml");
+            else {
                 System.out.println("Invalid choice. Please enter 1, 2, or 3.");
+                continue;
             }
+            System.out.println("Loaded game file.\n");
         }
 
         vault.loadQuestions(reader);
 
-        // Number of Plyaers
+        // --- Number of Players ---
         int numPlayers = 0;
         while (numPlayers < 1 || numPlayers > 4) {
             System.out.print("Enter number of players (1-4): ");
@@ -53,7 +52,7 @@ public class JeopardySession {
                     System.out.println("Invalid number of players. Must be between 1 and 4.");
                 }
             } else {
-                System.out.println("Invalid input. Please enter a number between 1 and 4.");
+                System.out.println("Invalid input. Enter a number between 1 and 4.");
                 scanner.nextLine();
             }
         }
@@ -64,85 +63,121 @@ public class JeopardySession {
             game.getPlayers().add(new Player(name));
         }
 
-        
+        // --- Display all questions at the start ---
+        System.out.println("\nJeopardy Questions Available:");
+        System.out.println("-----------------------------------------------");
+        vault.displayAll();
+        System.out.println("-----------------------------------------------");
 
-        int x=0;
-        while (true){
-            if (!game.hasActiveQuestion()){
-                vault.displayAll();
-                System.out.println("[" + game.getPlayers().get(x).getName() + "] Choose a question by category and value: (Eg: File Handling 200)"); // just wanna add some player tracking cause its kinda easy to lose track rn
-                String string = scanner.nextLine();
-                if (string.equals("exit")){
+        int currentPlayerIndex = 0;
+
+        // --- Main Game Loop ---
+        while (vault.getAll().size() > 0) {
+            Player currentPlayer = game.getPlayers().get(currentPlayerIndex);
+
+            // --- Select a question ---
+            Question selectedQuestion = null;
+            while (selectedQuestion == null) {
+                System.out.println("[" + currentPlayer.getName() + "] Choose a question (or type 'exit' to quit):");
+                String input = scanner.nextLine().trim();
+                if (input.equalsIgnoreCase("exit")) {
+                    System.out.println("Game exited by player.");
+                    vault.getAll().clear(); // Force end game
                     break;
                 }
-                try{
-                    String cat = string.substring(0, string.length()-3).trim(); //THE PROBLEM WAS WHITESPACE AFTER TRUNCATE cause i split at the start of value so there was perma whitespace
-                    int val = Integer.valueOf(string.substring(string.length()-3, string.length()));
-                    Question q = vault.getQuestion(cat, val);
-                    if (q==null){
-                        System.out.println("No Question found for " + cat + " at " + val); //somehow i managed to write everything blind with no validation - my genius is truly frightening or atleast it would be if it worked
+
+                try {
+                    int spaceIndex = input.lastIndexOf(' ');
+                    String category = input.substring(0, spaceIndex).trim();
+                    int value = Integer.parseInt(input.substring(spaceIndex + 1));
+
+                    selectedQuestion = vault.getQuestion(category, value);
+                    if (selectedQuestion == null) {
+                        System.out.println("No question found for " + category + " at " + value);
                     }
-                    int score = q.getValue();
-                    ActionTaken selectedQuestion = new SelectQuestionAction(game.getPlayers().get(x), q);
-                    System.out.println(q.getText());
-                    selectedQuestion.execute(game);
-                    System.out.println("[" + game.getPlayers().get(x).getName() + "] Choose your answer: (A,B,C,D)");
-                    String answer = scanner.nextLine();
-                    if (answer.equals("exit")){break;}
-                    try{
-                        char ans = Character.toUpperCase(answer.charAt(0));
-                        if (ans!='A' && ans!='B' && ans!='C' && ans!='D'){ //brute forcing but close to deadline so oh well @ reems if you think you can clean it up then go ahead
-                            throw new Exception("Invalid Format");
-                        }
-                        ActionTaken answeredQuestion = new AnswerQuestionAction(game.getPlayers().get(x), q, ans);
-                        answeredQuestion.execute(game);
-                        if (game.hasActiveQuestion()){
-                            if (x==(game.getPlayers().size())-1){x=0;}
-                            else {x++;}
-                            System.out.println("Incorrect Answer!");
-                        }   
-                    } catch (Exception e){
-                        System.out.println("Invalid input format. Use Option Char, e.g., 'A'");
-                        continue;
-                    }
-                    System.out.println("[" + game.getPlayers().get(x).getName() + "] + " + score + " points!");
-                } catch (Exception e){
+
+                } catch (Exception e) {
                     System.out.println("Invalid input format. Use 'Category Value' e.g., File Handling 200");
-                    continue;
-                }                
-            } else if (game.hasActiveQuestion()){
-                Question q = game.getActiveQuestion();
-                int score = q.getValue();
-                System.out.println(q.getText());
-                q.displayOptions();
-                System.out.println("[" + game.getPlayers().get(x).getName() + "] Choose your answer: (A,B,C,D)");
-                String answer = scanner.nextLine();
-                if (answer.equals("exit")){break;}
-                try{
-                    char ans = Character.toUpperCase(answer.charAt(0));
-                    if (ans!='A' && ans!='B' && ans!='C' && ans!='D'){
-                        throw new Exception("Invalid Format");
-                    }
-                    ActionTaken answeredQuestion = new AnswerQuestionAction(game.getPlayers().get(x), q, ans);
-                    answeredQuestion.execute(game);
-                    if (game.hasActiveQuestion()){
-                        if (x==(game.getPlayers().size())-1){x=0;}
-                        else {x++;}
-                        System.out.println("Incorrect Answer!");
-                    }   
-                } catch (Exception e){
-                    System.out.println("Invalid input format. Use Option Char, e.g., 'A'");
-                    continue;
                 }
-                System.out.println("[" + game.getPlayers().get(x).getName() + "] scored " + score + " points!");
             }
+
+            if (selectedQuestion == null) break; // Exit game
+
+            // --- Show question ---
+            System.out.println("\nQuestion: " + selectedQuestion.getText());
+            selectedQuestion.displayOptions();
+
+            // --- Answer the question ---
+            char answer = ' ';
+            while (true) {
+                System.out.println("[" + currentPlayer.getName() + "] Choose your answer (A, B, C, D) or type 'exit':");
+                String ansInput = scanner.nextLine().trim();
+                if (ansInput.equalsIgnoreCase("exit")) {
+                    System.out.println("Game exited by player.");
+                    vault.getAll().clear(); // Force end game
+                    break;
+                }
+                if (ansInput.length() == 1) {
+                    answer = Character.toUpperCase(ansInput.charAt(0));
+                    if (answer >= 'A' && answer <= 'D') break;
+                }
+                System.out.println("Invalid input. Please enter A, B, C, or D.");
+            }
+
+            if (vault.getAll().isEmpty()) break; // Exit if game ended
+
+            // --- Process answer ---
+            ActionTaken answerAction = new AnswerQuestionAction(currentPlayer, selectedQuestion, answer);
+            answerAction.execute(game);
+
+            // Compare player's answer to the correct answer
+            boolean correct = (answer == selectedQuestion.getAnswer());
+            int points = correct ? selectedQuestion.getValue() : 0;
+
+            System.out.println("[" + currentPlayer.getName() + "] " + (correct ? "Correct!" : "Incorrect!") +
+                    " +" + points + " points" +
+                    " (Total: " + currentPlayer.getScore() + ")");
+
+            // --- Remove question from vault ---
+            vault.removeQuestion(selectedQuestion);
+
+            // --- Show remaining questions ---
+            System.out.println("\nRemaining Questions:");
+            System.out.println("-----------------------------------------------");
+            vault.displayAll();
+            System.out.println("-----------------------------------------------");
+
+            // --- Next player ---
+            currentPlayerIndex = (currentPlayerIndex + 1) % game.getPlayers().size();
         }
 
+        // --- Final Scores ---
         System.out.println("\nFinal Scores:");
         for (Player p : game.getPlayers()) {
             System.out.println(p.getName() + ": " + p.getScore());
         }
 
+        // --- Generate reports ---
+        try {
+            String outputFolder = "reports";
+            new File(outputFolder).mkdirs();
+
+            TXTReportGenerator txtReport = new TXTReportGenerator(outputFolder + "/game_report.txt");
+            CSVReportGenerator csvReport = new CSVReportGenerator(outputFolder + "/game_event_log.csv");
+            DOCXReportGenerator docxReport = new DOCXReportGenerator(outputFolder + "/game_report.docx");
+            PDFReportGenerator pdfReport = new PDFReportGenerator(outputFolder + "/game_report.pdf");
+
+            txtReport.generate(logger);
+            csvReport.generate(logger);
+            docxReport.generate(logger);
+            pdfReport.generate(logger);
+
+            System.out.println("\nAll reports generated in: " + outputFolder);
+        } 
+        catch (Exception e) {
+            System.out.println("Error generating reports: " + e.getMessage());
+        }
+
         scanner.close();
-    }   
+    }
 }
