@@ -41,7 +41,14 @@ public class TXTReportGenerator implements ReportGenerator {
                     playerNames.add(playerName);
                 }
             }
-            writer.write("Players: " + String.join(", ", playerNames) + "\n\n");
+            writer.write("Players: ");
+            for (int i = 0; i < playerNames.size(); i++) {
+                writer.write(playerNames.get(i));
+                if (i < playerNames.size() - 1) {
+                    writer.write(", ");
+                }
+            }
+            writer.write("\n\n");
 
             // Gameplay Summary
             writer.write("Gameplay Summary:\n");
@@ -76,7 +83,14 @@ public class TXTReportGenerator implements ReportGenerator {
                     writer.write("Turn " + turn + ": " + e.getPlayerName() + " selected " 
                                  + category + " for " + value + " pts\n");
                     writer.write("Question: " + questionText + "\n");
-                    writer.write("Answer: " + answerGiven + " — " + result + " (+" + value + " pts)\n");
+
+                    // Only show points if correct
+                    if ("Correct".equalsIgnoreCase(result)) {
+                        writer.write("Answer: " + answerGiven + " — " + result + " (+" + value + " pts)\n");
+                    } else {
+                        writer.write("Answer: " + answerGiven + " — " + result + "\n");
+                    }
+
                     writer.write("Score after turn: " + e.getPlayerName() + " = " + e.getScoreAfter() + "\n\n");
                     turn++;
                 }
@@ -84,7 +98,8 @@ public class TXTReportGenerator implements ReportGenerator {
 
             // Final Scores
             writer.write("Final Scores:\n");
-            for (String playerName : playerNames) {
+            for (int i = 0; i < playerNames.size(); i++) {
+                String playerName = playerNames.get(i);
                 int finalScore = 0;
                 for (GameEvent e : events) {
                     if (playerName.equals(e.getPlayerName())) {

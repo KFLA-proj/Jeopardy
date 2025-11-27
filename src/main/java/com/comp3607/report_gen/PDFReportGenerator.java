@@ -81,7 +81,14 @@ public class PDFReportGenerator implements ReportGenerator {
 
                     document.add(new Paragraph("Turn " + turn + ": " + e.getPlayerName() + " selected " + category + " for " + value + " pts"));
                     document.add(new Paragraph("Question: " + questionText));
-                    document.add(new Paragraph("Answer: " + answerGiven + " — " + result + " (+" + value + " pts)"));
+
+                    // Only show points if the answer was correct
+                    if ("Correct".equalsIgnoreCase(result)) {
+                        document.add(new Paragraph("Answer: " + answerGiven + " — " + result + " (+" + value + " pts)"));
+                    } else {
+                        document.add(new Paragraph("Answer: " + answerGiven + " — " + result));
+                    }
+
                     document.add(new Paragraph("Score after turn: " + e.getPlayerName() + " = " + e.getScoreAfter() + "\n"));
                     turn++;
                 }
@@ -89,7 +96,8 @@ public class PDFReportGenerator implements ReportGenerator {
 
             // Final Scores
             document.add(new Paragraph("Final Scores:"));
-            for (String playerName : playerNames) {
+            for (int i = 0; i < playerNames.size(); i++) {
+                String playerName = playerNames.get(i);
                 int finalScore = 0;
                 for (GameEvent e : events) {
                     if (playerName.equals(e.getPlayerName())) {
