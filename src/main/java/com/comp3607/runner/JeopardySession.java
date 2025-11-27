@@ -64,54 +64,78 @@ public class JeopardySession {
             game.getPlayers().add(new Player(name));
         }
 
-        vault.displayAll();
+        
 
-        int currentPlayerIndex = 0;
-
-        // Game
-        while (vault.getAll().size() > 0) { 
-            Player currentPlayer = game.getPlayers().get(currentPlayerIndex);
-
-            Question selectedQuestion = null;
-            while (selectedQuestion == null) {
-                System.out.println("[" + currentPlayer.getName() + "] Choose a question by category and value (e.g., File Handling 200):");
-                String input = scanner.nextLine().trim();
-                try {
-                    int spaceIndex = input.lastIndexOf(' ');
-                    String category = input.substring(0, spaceIndex).trim();
-                    int value = Integer.parseInt(input.substring(spaceIndex + 1));
-
-                    selectedQuestion = vault.getQuestion(category, value);
-                    if (selectedQuestion == null) {
-                        System.out.println("No question found for " + category + " at " + value);
+        int x=0;
+        while (true){
+            if (!game.hasActiveQuestion()){
+                vault.displayAll();
+                System.out.println("[" + game.getPlayers().get(x).getName() + "] Choose a question by category and value: (Eg: File Handling 200)"); // just wanna add some player tracking cause its kinda easy to lose track rn
+                String string = scanner.nextLine();
+                if (string.equals("exit")){
+                    break;
+                }
+                try{
+                    String cat = string.substring(0, string.length()-3).trim(); //THE PROBLEM WAS WHITESPACE AFTER TRUNCATE cause i split at the start of value so there was perma whitespace
+                    int val = Integer.valueOf(string.substring(string.length()-3, string.length()));
+                    Question q = vault.getQuestion(cat, val);
+                    if (q==null){
+                        System.out.println("No Question found for " + cat + " at " + val); //somehow i managed to write everything blind with no validation - my genius is truly frightening or atleast it would be if it worked
                     }
-
-                } catch (Exception e) {
+                    int score = q.getValue();
+                    ActionTaken selectedQuestion = new SelectQuestionAction(game.getPlayers().get(x), q);
+                    System.out.println(q.getText());
+                    selectedQuestion.execute(game);
+                    System.out.println("[" + game.getPlayers().get(x).getName() + "] Choose your answer: (A,B,C,D)");
+                    String answer = scanner.nextLine();
+                    if (answer.equals("exit")){break;}
+                    try{
+                        char ans = Character.toUpperCase(answer.charAt(0));
+                        if (ans!='A' && ans!='B' && ans!='C' && ans!='D'){ //brute forcing but close to deadline so oh well @ reems if you think you can clean it up then go ahead
+                            throw new Exception("Invalid Format");
+                        }
+                        ActionTaken answeredQuestion = new AnswerQuestionAction(game.getPlayers().get(x), q, ans);
+                        answeredQuestion.execute(game);
+                        if (game.hasActiveQuestion()){
+                            if (x==(game.getPlayers().size())-1){x=0;}
+                            else {x++;}
+                            System.out.println("Incorrect Answer!");
+                        }   
+                    } catch (Exception e){
+                        System.out.println("Invalid input format. Use Option Char, e.g., 'A'");
+                        continue;
+                    }
+                    System.out.println("[" + game.getPlayers().get(x).getName() + "] + " + score + " points!");
+                } catch (Exception e){
                     System.out.println("Invalid input format. Use 'Category Value' e.g., File Handling 200");
+                    continue;
+                }                
+            } else if (game.hasActiveQuestion()){
+                Question q = game.getActiveQuestion();
+                int score = q.getValue();
+                System.out.println(q.getText());
+                q.displayOptions();
+                System.out.println("[" + game.getPlayers().get(x).getName() + "] Choose your answer: (A,B,C,D)");
+                String answer = scanner.nextLine();
+                if (answer.equals("exit")){break;}
+                try{
+                    char ans = Character.toUpperCase(answer.charAt(0));
+                    if (ans!='A' && ans!='B' && ans!='C' && ans!='D'){
+                        throw new Exception("Invalid Format");
+                    }
+                    ActionTaken answeredQuestion = new AnswerQuestionAction(game.getPlayers().get(x), q, ans);
+                    answeredQuestion.execute(game);
+                    if (game.hasActiveQuestion()){
+                        if (x==(game.getPlayers().size())-1){x=0;}
+                        else {x++;}
+                        System.out.println("Incorrect Answer!");
+                    }   
+                } catch (Exception e){
+                    System.out.println("Invalid input format. Use Option Char, e.g., 'A'");
+                    continue;
                 }
+                System.out.println("[" + game.getPlayers().get(x).getName() + "] scored " + score + " points!");
             }
-
-            System.out.println("\nQuestion: " + selectedQuestion.getText());
-            selectedQuestion.displayOptions();
-
-            char answer = ' ';
-            while (true) {
-                System.out.println("[" + currentPlayer.getName() + "] Choose your answer: (A, B, C, D)");
-                String ansInput = scanner.nextLine().trim();
-                if (ansInput.length() == 1) {
-                    answer = Character.toUpperCase(ansInput.charAt(0));
-                    if (answer >= 'A' && answer <= 'D') break;
-                }
-                System.out.println("Invalid input. Please enter A, B, C, or D.");
-            }
-
-            ActionTaken answerAction = new AnswerQuestionAction(currentPlayer, selectedQuestion, answer);
-            answerAction.execute(game);
-
-            vault.removeQuestion(selectedQuestion);
-            vault.displayAll();
-
-            currentPlayerIndex = (currentPlayerIndex + 1) % game.getPlayers().size();
         }
 
         System.out.println("\nFinal Scores:");
@@ -120,5 +144,5 @@ public class JeopardySession {
         }
 
         scanner.close();
-    }
+    }   
 }
