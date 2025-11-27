@@ -82,9 +82,18 @@ public class DOCXReportGenerator implements ReportGenerator {
                             "Turn " + turn + ": " + e.getPlayerName() + " selected " + category + " for " + value + " pts"
                     );
                     doc.createParagraph().createRun().setText("Question: " + questionText);
-                    doc.createParagraph().createRun().setText(
-                            "Answer: " + answerGiven + " — " + result + " (+" + value + " pts)"
-                    );
+
+                    // Only show points if the answer was correct
+                    if ("Correct".equalsIgnoreCase(result)) {
+                        doc.createParagraph().createRun().setText(
+                                "Answer: " + answerGiven + " — " + result + " (+" + value + " pts)"
+                        );
+                    } else {
+                        doc.createParagraph().createRun().setText(
+                                "Answer: " + answerGiven + " — " + result
+                        );
+                    }
+
                     doc.createParagraph().createRun().setText(
                             "Score after turn: " + e.getPlayerName() + " = " + e.getScoreAfter() + "\n"
                     );
@@ -95,7 +104,8 @@ public class DOCXReportGenerator implements ReportGenerator {
 
             // Final Scores
             doc.createParagraph().createRun().setText("Final Scores:");
-            for (String playerName : playerNames) {
+            for (int i = 0; i < playerNames.size(); i++) {
+                String playerName = playerNames.get(i);
                 int finalScore = 0;
                 for (GameEvent e : events) {
                     if (playerName.equals(e.getPlayerName())) {
