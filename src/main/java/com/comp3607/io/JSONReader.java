@@ -10,14 +10,25 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
 
+/**
+ * Creates a JSONReader object capable of reading questions from a JSON file
+ */
 public class JSONReader implements Reader{
     private String filename;
 
+    /**
+     * Creates a new JSONReader object with the specified filename
+     * @param filename the name of the JSON file to read from
+     */
     public JSONReader(String filename) {
         this.filename = filename;
     }
 
-
+    /**
+     * Reads questions from a JSON file and returns them as a list of Question objects
+     * @return a List of Question objects read from the JSON file
+     */    
+    @Override
     public List<Question> read() {
         List<Question> questions = new ArrayList<>();
         try {

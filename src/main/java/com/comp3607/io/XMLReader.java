@@ -17,13 +17,24 @@ import org.w3c.dom.Node;
 import org.w3c.dom.Element;
 import java.io.File;
 
+/**
+ * Creates an XMLReader object capable of reading questions from an XML file
+ */
 public class XMLReader implements Reader{
     private String filename;
-
+    /**
+     * Creates a new XMLReader object with the specified filename
+     * @param filename the name of the XML file to read from
+     */
     public XMLReader(String filename) {
         this.filename = filename;
     }
 
+    /**
+     * Reads questions from a XML file and returns them as a list of Question objects
+     * @return a List of Question objects read from the XML file
+     */
+    @Override
     public List<Question> read() {
         List<Question> questions = new ArrayList<>();
         try{

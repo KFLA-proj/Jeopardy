@@ -8,13 +8,23 @@ import java.util.Map;
 import java.util.HashMap;
 import java.io.FileReader;
 
+/**
+ * Creates a CSVReader object capable of reading questions from a CSV file
+ */
 public class CSVReader implements Reader{
     private String filename;
 
+    /**
+     * Creates a new CSVReader object with the specified filename
+     * @param filename the name of the CSV file to read from
+     */
     public CSVReader(String filename){
         this.filename = filename;
     }
-
+    /**
+     * Reads questions from a CSV file and returns them as a list of Question objects
+     * @return a List of Question objects read from the CSV file
+     */
     @Override
     public List<Question> read() {
         List<Question> questions = new ArrayList<>();

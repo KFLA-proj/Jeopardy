@@ -10,14 +10,25 @@ import com.itextpdf.layout.element.Paragraph;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Generates a PDF report from the game log
+ */
 public class PDFReportGenerator implements ReportGenerator {
 
     private final String filename;
 
+    /**
+     * Creates a PDFReportGenerator with the specified filename
+     * @param filename the name of the PDF file to generate
+     */
     public PDFReportGenerator(String filename) {
         this.filename = filename;
     }
 
+    /**
+     * Generates the PDF report from the provided GameLogger
+     * @param logger the GameLogger containing the game events to log
+     */    
     @Override
     public void generate(GameLogger logger) {
         System.out.println("Writing PDF report to " + filename);

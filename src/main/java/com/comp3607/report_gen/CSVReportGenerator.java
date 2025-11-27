@@ -8,15 +8,26 @@ import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+/**
+ * Generates a CSV report from the game log
+ */
 public class CSVReportGenerator implements ReportGenerator {
 
     private final String filename;
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
 
+    /**
+     * Creates a CSVReportGenerator with the specified filename
+     * @param filename the name of the CSV file to generate
+     */
     public CSVReportGenerator(String filename) {
         this.filename = filename;
     }
 
+    /**
+     * Generates the CSV report from the provided GameLogger
+     * @param logger the GameLogger containing the game events to log
+     */
     @Override
     public void generate(GameLogger logger) {
         List<GameEvent> events = logger.getEvents();
@@ -81,7 +92,12 @@ public class CSVReportGenerator implements ReportGenerator {
             ex.printStackTrace();
         }
     }
-
+    
+    /**
+     * Escapes a string value for CSV format
+     * @param value the string value to escape
+     * @return the escaped string suitable for CSV
+     */
     private String escapeCSV(String value) {
         if (value == null || value.isEmpty()) return "";
         if (value.contains(",") || value.contains("\"")) {

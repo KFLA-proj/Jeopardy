@@ -8,15 +8,24 @@ import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
-
+/**
+ * Generates a DOCX report from the game log
+ */
 public class DOCXReportGenerator implements ReportGenerator {
 
     private final String filename;
 
+    /**
+     * Creates a DOCXReportGenerator with the specified filename
+     * @param filename the name of the DOCX file to generate
+     */
     public DOCXReportGenerator(String filename) {
         this.filename = filename;
     }
-
+    /**
+     * Generates the DOCX report from the provided GameLogger
+     * @param logger the GameLogger containing the game events to log
+     */
     @Override
     public void generate(GameLogger logger) {
         System.out.println("Writing DOCX report to " + filename);

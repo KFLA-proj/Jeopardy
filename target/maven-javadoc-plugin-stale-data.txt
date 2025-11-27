@@ -1,0 +1,74 @@
+-J-Duser.language=
+-J-Duser.country=
+@options
+@packages
+--no-fonts
+-classpath
+'C:/Users/LeviA/.m2/repository/com/fasterxml/jackson/core/jackson-databind/2.16.1/jackson-databind-2.16.1.jar;C:/Users/LeviA/.m2/repository/com/fasterxml/jackson/core/jackson-annotations/2.16.1/jackson-annotations-2.16.1.jar;C:/Users/LeviA/.m2/repository/com/fasterxml/jackson/core/jackson-core/2.16.1/jackson-core-2.16.1.jar;C:/Users/LeviA/.m2/repository/com/itextpdf/kernel/7.2.5/kernel-7.2.5.jar;C:/Users/LeviA/.m2/repository/com/itextpdf/io/7.2.5/io-7.2.5.jar;C:/Users/LeviA/.m2/repository/com/itextpdf/commons/7.2.5/commons-7.2.5.jar;C:/Users/LeviA/.m2/repository/org/bouncycastle/bcpkix-jdk15on/1.70/bcpkix-jdk15on-1.70.jar;C:/Users/LeviA/.m2/repository/org/bouncycastle/bcutil-jdk15on/1.70/bcutil-jdk15on-1.70.jar;C:/Users/LeviA/.m2/repository/org/bouncycastle/bcprov-jdk15on/1.70/bcprov-jdk15on-1.70.jar;C:/Users/LeviA/.m2/repository/org/slf4j/slf4j-api/1.7.36/slf4j-api-1.7.36.jar;C:/Users/LeviA/.m2/repository/com/itextpdf/layout/7.2.5/layout-7.2.5.jar;C:/Users/LeviA/.m2/repository/org/apache/poi/poi-ooxml/5.2.3/poi-ooxml-5.2.3.jar;C:/Users/LeviA/.m2/repository/org/apache/poi/poi/5.2.3/poi-5.2.3.jar;C:/Users/LeviA/.m2/repository/commons-codec/commons-codec/1.15/commons-codec-1.15.jar;C:/Users/LeviA/.m2/repository/org/apache/commons/commons-math3/3.6.1/commons-math3-3.6.1.jar;C:/Users/LeviA/.m2/repository/com/zaxxer/SparseBitSet/1.2/SparseBitSet-1.2.jar;C:/Users/LeviA/.m2/repository/org/apache/poi/poi-ooxml-lite/5.2.3/poi-ooxml-lite-5.2.3.jar;C:/Users/LeviA/.m2/repository/org/apache/xmlbeans/xmlbeans/5.1.1/xmlbeans-5.1.1.jar;C:/Users/LeviA/.m2/repository/org/apache/commons/commons-compress/1.21/commons-compress-1.21.jar;C:/Users/LeviA/.m2/repository/commons-io/commons-io/2.11.0/commons-io-2.11.0.jar;C:/Users/LeviA/.m2/repository/com/github/virtuald/curvesapi/1.07/curvesapi-1.07.jar;C:/Users/LeviA/.m2/repository/org/apache/logging/log4j/log4j-api/2.18.0/log4j-api-2.18.0.jar;C:/Users/LeviA/.m2/repository/org/apache/commons/commons-collections4/4.4/commons-collections4-4.4.jar'
+-encoding
+'UTF-8'
+-protected
+-source
+'17'
+-sourcepath
+'C:/Users/LeviA/Documents/Comp 3607/Group Proj/Jeopardy/src/main/java'
+-author
+-bottom
+'Copyright &#169; 2025. All rights reserved.'
+-charset
+'UTF-8'
+-d
+'C:/Users/LeviA/Documents/Comp 3607/Group Proj/Jeopardy/target/reports/apidocs'
+-docencoding
+'UTF-8'
+-doctitle
+'group_project 1.0-SNAPSHOT API'
+-use
+-version
+-windowtitle
+'group_project 1.0-SNAPSHOT API'
+com.comp3607.actions
+com.comp3607.core_game
+com.comp3607.io
+com.comp3607.logger
+com.comp3607.questions
+com.comp3607.report_gen
+com.comp3607.runner
+C:\Users\LeviA\.m2\repository\com\fasterxml\jackson\core\jackson-databind\2.16.1\jackson-databind-2.16.1.jar = 1764093035244
+C:\Users\LeviA\.m2\repository\com\fasterxml\jackson\core\jackson-annotations\2.16.1\jackson-annotations-2.16.1.jar = 1764093035342
+C:\Users\LeviA\.m2\repository\com\fasterxml\jackson\core\jackson-core\2.16.1\jackson-core-2.16.1.jar = 1764093035514
+C:\Users\LeviA\.m2\repository\com\itextpdf\kernel\7.2.5\kernel-7.2.5.jar = 1764199283449
+C:\Users\LeviA\.m2\repository\com\itextpdf\io\7.2.5\io-7.2.5.jar = 1764199283367
+C:\Users\LeviA\.m2\repository\com\itextpdf\commons\7.2.5\commons-7.2.5.jar = 1764199283062
+C:\Users\LeviA\.m2\repository\org\bouncycastle\bcpkix-jdk15on\1.70\bcpkix-jdk15on-1.70.jar = 1764199283304
+C:\Users\LeviA\.m2\repository\org\bouncycastle\bcutil-jdk15on\1.70\bcutil-jdk15on-1.70.jar = 1764199283469
+C:\Users\LeviA\.m2\repository\org\bouncycastle\bcprov-jdk15on\1.70\bcprov-jdk15on-1.70.jar = 1764199285746
+C:\Users\LeviA\.m2\repository\org\slf4j\slf4j-api\1.7.36\slf4j-api-1.7.36.jar = 1764199283410
+C:\Users\LeviA\.m2\repository\com\itextpdf\layout\7.2.5\layout-7.2.5.jar = 1764199283528
+C:\Users\LeviA\.m2\repository\org\apache\poi\poi-ooxml\5.2.3\poi-ooxml-5.2.3.jar = 1764199284093
+C:\Users\LeviA\.m2\repository\org\apache\poi\poi\5.2.3\poi-5.2.3.jar = 1764199284404
+C:\Users\LeviA\.m2\repository\commons-codec\commons-codec\1.15\commons-codec-1.15.jar = 1764199284204
+C:\Users\LeviA\.m2\repository\org\apache\commons\commons-math3\3.6.1\commons-math3-3.6.1.jar = 1764199284267
+C:\Users\LeviA\.m2\repository\com\zaxxer\SparseBitSet\1.2\SparseBitSet-1.2.jar = 1764199284186
+C:\Users\LeviA\.m2\repository\org\apache\poi\poi-ooxml-lite\5.2.3\poi-ooxml-lite-5.2.3.jar = 1764199285413
+C:\Users\LeviA\.m2\repository\org\apache\xmlbeans\xmlbeans\5.1.1\xmlbeans-5.1.1.jar = 1764199285828
+C:\Users\LeviA\.m2\repository\org\apache\commons\commons-compress\1.21\commons-compress-1.21.jar = 1764199284734
+C:\Users\LeviA\.m2\repository\commons-io\commons-io\2.11.0\commons-io-2.11.0.jar = 1764199284678
+C:\Users\LeviA\.m2\repository\com\github\virtuald\curvesapi\1.07\curvesapi-1.07.jar = 1764199284790
+C:\Users\LeviA\.m2\repository\org\apache\logging\log4j\log4j-api\2.18.0\log4j-api-2.18.0.jar = 1764199285008
+C:\Users\LeviA\.m2\repository\org\apache\commons\commons-collections4\4.4\commons-collections4-4.4.jar = 1764199285153
+C:\Users\LeviA\Documents\Comp 3607\Group Proj\Jeopardy\src\main\java = 1764206421477
+C:\Users\LeviA\Documents\Comp 3607\Group Proj\Jeopardy\target\reports\apidocs\allclasses-index.html = 1764220654464
+C:\Users\LeviA\Documents\Comp 3607\Group Proj\Jeopardy\target\reports\apidocs\allpackages-index.html = 1764220654470
+C:\Users\LeviA\Documents\Comp 3607\Group Proj\Jeopardy\target\reports\apidocs\element-list = 1764220654178
+C:\Users\LeviA\Documents\Comp 3607\Group Proj\Jeopardy\target\reports\apidocs\help-doc.html = 1764220654555
+C:\Users\LeviA\Documents\Comp 3607\Group Proj\Jeopardy\target\reports\apidocs\index-all.html = 1764220654531
+C:\Users\LeviA\Documents\Comp 3607\Group Proj\Jeopardy\target\reports\apidocs\index.html = 1764220654434
+C:\Users\LeviA\Documents\Comp 3607\Group Proj\Jeopardy\target\reports\apidocs\member-search-index.js = 1764220654482
+C:\Users\LeviA\Documents\Comp 3607\Group Proj\Jeopardy\target\reports\apidocs\module-search-index.js = 1764220654474
+C:\Users\LeviA\Documents\Comp 3607\Group Proj\Jeopardy\target\reports\apidocs\overview-summary.html = 1764220654549
+C:\Users\LeviA\Documents\Comp 3607\Group Proj\Jeopardy\target\reports\apidocs\overview-tree.html = 1764220654428
+C:\Users\LeviA\Documents\Comp 3607\Group Proj\Jeopardy\target\reports\apidocs\package-search-index.js = 1764220654476
+C:\Users\LeviA\Documents\Comp 3607\Group Proj\Jeopardy\target\reports\apidocs\search.html = 1764220654545
+C:\Users\LeviA\Documents\Comp 3607\Group Proj\Jeopardy\target\reports\apidocs\tag-search-index.js = 1764220654485
+C:\Users\LeviA\Documents\Comp 3607\Group Proj\Jeopardy\target\reports\apidocs\type-search-index.js = 1764220654480

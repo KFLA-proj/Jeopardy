@@ -7,14 +7,24 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Generates a TXT report from the game log
+ */
 public class TXTReportGenerator implements ReportGenerator {
 
     private final String filename;
-
+    /**
+     * Creates a TXTReportGenerator with the specified filename
+     * @param filename the name of the TXT file to generate
+     */
     public TXTReportGenerator(String filename) {
         this.filename = filename;
     }
 
+    /**
+     * Generates the TXT report from the provided GameLogger
+     * @param logger the GameLogger containing the game events to log
+     */
     @Override
     public void generate(GameLogger logger) {
         System.out.println("Writing report to " + filename);
